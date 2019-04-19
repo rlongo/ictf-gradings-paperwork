@@ -40,7 +40,7 @@ class BeltLookupXML(BeltLookup):
         Note that this method does not connect the next field of belt level
         :return belt_id, next_id, belt_level
         '''
-        name = tag.attrib["name"]
+        belt_name = tag.attrib["name"]
         belt_id = tag.attrib["id"]
         next_belt_id = None
         match_pattern = tag.findtext(".//match_pattern")
@@ -55,9 +55,14 @@ class BeltLookupXML(BeltLookup):
         for target in tag.findall(".//attributes/attribute"):
             attributes[target.attrib["name"]] = target.text
         for target in tag.findall(".//paperworks/paperwork"):
-            paperwork.append(target.text)
+            name = None
+            try:
+                name = target.attrib["name"]
+            except:
+                name = os.path.splitext(os.path.basename(target.text))[0]
+            paperwork.append((name, target.text))
 
-        return belt_id, next_belt_id, BeltLevel(name, match_pattern, None, paperwork, attributes)
+        return belt_id, next_belt_id, BeltLevel(belt_name, match_pattern, None, paperwork, attributes)
 
 
 

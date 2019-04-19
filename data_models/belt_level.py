@@ -10,7 +10,7 @@ class BeltLevel:
         :param match_pattern: Regex to test possible inputs against to verify
             that a given input is this belt level
         :param next_level: The next BeltLevel. Can be nil
-        :param papaerwork: Paperwork relevant to this belt level
+        :param papaerwork: tuple of (dest_name, Paperwork) relevant to this belt level
         :param attributes: List of attributes specific to the given belt level
         """
         self.name = name
