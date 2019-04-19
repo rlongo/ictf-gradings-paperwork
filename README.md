@@ -17,13 +17,14 @@ produce some form of paperwork.
 ## Inputs
 
 ```
- python3 main.py --students inputs/students.xlsx --forms inputs/forms/ --config inputs/config --output=outputs/
+ python3 main.py --students inputs/students.xlsx --forms inputs/forms/ --config inputs/config --belts inputs/belts.xml --output=outputs/
 ```
 | INPUT |  |
 |---|---|
 | students | students EXCEL file. Header must be `First Name, Last Name, Belt Size, Belt Level` |
 | forms | List of forms to fill out. Currently a form is a jpg image that has a matching `name.jpeg.xml` which defines how to fill it in. Example below |
 | config | `key = value`. Used as substititions in forms |
+| belts | xml specifying data about each belt level. Example below |
 | output | where does the output go |
 
 ### students example
@@ -49,6 +50,31 @@ Assumes you have a jpeg to dump text ontop of.
     <field name="head_instructor" x="525" y="270" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
     <field name="dojang" x="125" y="270" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
 </template>
+```
+
+### belts example
+
+Example of belts input. Note that:
+* match_pattern is a regex
+* next_belt can be omitted
+* attributes is a dictionary of values that paperwork can pull in
+
+```xml
+<?xml version="1.0"?>
+<belts>
+    <belt id="1" name="Little Dragon White Belt" next_belt="2">
+        <match_pattern>little\s?dragon\s+white\s*(?:belt)?</match_pattern>
+
+        <paperworks>
+            <paperwork>LD_White_to_Orange_stripe</paperwork>
+            <paperwork>certificate</paperwork>
+        </paperworks>
+
+        <attributes>
+            <attribute name="fee">35</attribute>
+        </attributes>
+    </belt>
+</belts>
 ```
 
 ### config example
