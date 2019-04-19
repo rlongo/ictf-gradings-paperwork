@@ -1,2 +1,0 @@
-from student_iterator.iterator import BeltLevel, Student, StudentIterator
-from student_iterator.excel import StudentIteratorExcel

@@ -3,31 +3,10 @@
 import argparse
 import os
 
-from student_iterator import  StudentIteratorExcel, BeltLevel
+from parsers import  StudentIteratorExcel, BeltLookupXML
+from data_models import BeltLevel
 from paperwork import TemplateForm
 
-def get_belt_levels():
-    belts = [BeltLevel("Little Dragon White Belt", r"little\s?dragon\s+white\s*(?:belt)?", None, {"fee":  35}),
-                BeltLevel("Little Dragon Orange Stripe", r"little\s?dragon\s+(orange\s*(?:stripe)?)\s*(?:belt)?", None, {"fee":  40}),
-                BeltLevel("Little Dragon Green Stripe", r"little\s?dragon\s+(green\s*(?:stripe)?)\s*(?:belt)?", None, {"fee":  45}),
-                BeltLevel("Little Dragon Blue Stripe", r"little\s?dragon\s+(blue\s*(?:stripe)?)\s*(?:belt)?", None, {"fee":  50}),
-                BeltLevel("Little Dragon Red Stripe", r"little\s?dragon\s+(red\s*(?:stripe)?)\s*(?:belt)?", None, {"fee":  55}),
-                BeltLevel("Little Dragon Grey", r"little\s?dragon\s+(grey\s*(?:stripe)?)\s*(?:belt)?", None, {"fee":  60}),
-                BeltLevel("White", r"white\s*stripe\s*(?:belt)?", None, {"fee":  70}),
-                BeltLevel("Yellow Stripe", r"yellow\s*stripe\s*(?:belt)?", None, {"fee":  80}),
-                BeltLevel("Yellow", r"yellow\s*(?:belt)?", None, {"fee":  90}),
-                BeltLevel("Green Stripe", r"green\s*stripe\s*(?:belt)?", None, {"fee":  100}),
-                BeltLevel("Green", r"green\s*(?:belt)?", None, {"fee":  110}),
-                BeltLevel("Blue Stripe", r"blue\s*stripe\s*(?:belt)?", None, {"fee":  125}),
-                BeltLevel("Blue", r"blue\s*(?:belt)?", None, {"fee":  145}),
-                BeltLevel("Red Stripe", r"red\s*stripe\s*(?:belt)?", None, {"fee":  165}),
-                BeltLevel("Red", r"red\s*(?:belt)?", None, {"fee":  205}),
-                BeltLevel("Black Stripe", r"black\s*stripe\s*(?:belt)?", None,  {"fee":  550}),
-                BeltLevel("Black Belt Level Tests", r"black\s*belt.*", None, {"fee":  50})]
-
-    for i in range(len(belts)-2):
-        belts[i].next_level = belts[i+1]
-    return belts 
 
 def get_args():
     parser = argparse.ArgumentParser(description='Throwaway project to generate paperwork required for ictf gradings.')
@@ -37,6 +16,8 @@ def get_args():
                     help='Path to a directory with test forms. Test forms must have an xml file, and jpeg.')
     parser.add_argument('--config', metavar='config_file', required=True,
                     help='Path to a config file which has additional params in the format key = value.')
+    parser.add_argument('--belts', metavar='belts.xml', required=True,
+                    help='Config file for the belts.')
     parser.add_argument('--output', metavar='output dir', required=True,
                     help='Directory where output goes.')
     return parser.parse_args()
@@ -61,8 +42,9 @@ def main():
             forms.append(TemplateForm(name, form[:-4], form))
 
     config = get_config(args.config)
+    belt_lookup = BeltLookupXML(args.belts)
 
-    for student in StudentIteratorExcel(args.students, get_belt_levels()):
+    for student in StudentIteratorExcel(args.students, belt_lookup):
         sub_map = config
         sub_map["student"] = student
 
