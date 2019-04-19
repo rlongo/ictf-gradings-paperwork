@@ -1,4 +1,4 @@
-from parsers.excel import StudentIteratorExcel
+from parsers.excel import StudentIteratorExcel, write_aggregator_excel
 from parsers.xml import BeltLookupXML
 from parsers.paperwork_jpegform import PaperworkJPEGForm
 

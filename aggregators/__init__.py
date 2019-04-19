@@ -1,0 +1,3 @@
+from aggregators.aggregator import Aggregator
+from aggregators.belt_orders import BeltOrderAggregator
+from aggregators.registration_list import RegistrationListAggregator

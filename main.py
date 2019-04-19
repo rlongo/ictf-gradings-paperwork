@@ -3,9 +3,9 @@
 import argparse
 import os
 
-from parsers import  StudentIteratorExcel, BeltLookupXML, PaperworkJPEGForm
+from parsers import  StudentIteratorExcel, BeltLookupXML, PaperworkJPEGForm, write_aggregator_excel
 from data_models import BeltLevel
-
+from aggregators import BeltOrderAggregator, RegistrationListAggregator
 
 def get_args():
     parser = argparse.ArgumentParser(description='Throwaway project to generate paperwork required for ictf gradings.')
@@ -47,13 +47,24 @@ def main():
     config = get_config(args.config)
     belt_lookup = BeltLookupXML(args.belts)
 
+    aggregators = [BeltOrderAggregator(), RegistrationListAggregator()]
+    
     for student in StudentIteratorExcel(args.students, belt_lookup):
         sub_map = config
         sub_map["student"] = student
+
+        for aggregator in aggregators:
+            aggregator.process(student)
         
         for form_name in student.belt_level.paperwork:
             form = forms[form_name]
-            form.generate("{}/{}/{}-{}.jpg".format(args.output, form.name, student.fname, student.lname), sub_map)
-  
+            output_file = "{}/{}/{}-{}.jpg".format(args.output, form.name, student.fname, student.lname)
+            form.generate(output_file, sub_map)
+    
+    for aggregator in aggregators:
+        output_file = "{}/aggregations/{}.xlsx".format(args.output, aggregator.__class__.__name__)
+        write_aggregator_excel(output_file, aggregator)
+
+
 if __name__== "__main__":
   main()
