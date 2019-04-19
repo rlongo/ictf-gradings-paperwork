@@ -6,6 +6,7 @@ class Student:
     def __init__(self, fname, lname, belt_level, belt_size):
         self.fname = fname
         self.lname = lname
+        self.name = "{} {}".format(fname, lname)
         self.belt_level = belt_level
         self.belt_size = belt_size
     

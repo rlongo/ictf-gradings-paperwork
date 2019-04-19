@@ -12,8 +12,8 @@ class PaperworkJPEGForm(Paperwork):
     '''Template form take a template and generates the same file with annotations super-imposed'''
 
     def __init__(self, name, template_file, config_file):
-        assert helpers.verify_file(template_file)
-        assert helpers.verify_file(config_file)
+        assert helpers.verify_file(template_file), "Template not found '{}'".format(template_file)
+        assert helpers.verify_file(config_file), "Template config not found '{}'".format(config_file)
 
         self.name = name
         self._template_file = template_file
@@ -34,6 +34,21 @@ class PaperworkJPEGForm(Paperwork):
         img.save(output_file)
 
     def _get_config_val(self, key, sub_map):
+        try:
+            keys = key.split('.')
+            val = sub_map
+            for k in keys:
+                if isinstance(val,dict):
+                    val = val[k]
+                else:
+                    val = getattr(val, k)
+
+            return str(val)
+        except:
+            print("Key not found. Defaulting to empty '{}'".format(key))
+        
+        return ""
+
         keys = key.split('.')
         val = sub_map
         for k in keys:

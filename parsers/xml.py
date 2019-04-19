@@ -54,8 +54,8 @@ class BeltLookupXML(BeltLookup):
 
         for target in tag.findall(".//attributes/attribute"):
             attributes[target.attrib["name"]] = target.text
-        for target in tag.findall(".//paperworks"):
-            paperwork.append(target.findtext(".//paperwork"))
+        for target in tag.findall(".//paperworks/paperwork"):
+            paperwork.append(target.text)
 
         return belt_id, next_belt_id, BeltLevel(name, match_pattern, None, paperwork, attributes)
 

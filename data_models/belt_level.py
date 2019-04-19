@@ -17,13 +17,14 @@ class BeltLevel:
         self.match_pattern = match_pattern
         self.next_level = next_level
         self.paperwork = paperwork
-        self.attributes = attributes
+        for k,v in attributes.items():
+            setattr(self, k, v)
     
     def __str__(self):
         next_level = "None"
         if self.next_level:
             next_level = self.next_level.name
-        return "Belt Level: {} (Next: {}), {}".format(self.name, next_level, str(self.attributes))
+        return "Belt Level: {} (Next: {})".format(self.name, next_level)
 
 
 class BeltLookup:

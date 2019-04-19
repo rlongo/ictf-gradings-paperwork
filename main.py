@@ -25,20 +25,24 @@ def get_config(config_file):
     config = dict()
     with open(config_file) as file:
         for line in file:
+            if line.startswith("#"):
+                continue # Skip comments
             line = line.split('=')
+            if len(line) < 2:
+                continue # For empty lines
             config[line[0].strip()] = line[1].strip()
     return config
 
 def main():
     args = get_args()
 
-    forms = []
+    forms = dict()
     for file in os.listdir(args.forms):
         if file.endswith(".xml"):
             name = file.split('.')[0]
             form = os.path.join(args.forms, file)
 
-            forms.append(PaperworkJPEGForm(name, form[:-4], form))
+            forms[name] = PaperworkJPEGForm(name, form[:-4], form)
 
     config = get_config(args.config)
     belt_lookup = BeltLookupXML(args.belts)
@@ -46,9 +50,10 @@ def main():
     for student in StudentIteratorExcel(args.students, belt_lookup):
         sub_map = config
         sub_map["student"] = student
-
-        for form in forms:
-            form.generate("{}/{}/{}-{}.testform.jpg".format(args.output, form.name, student.fname, student.lname), sub_map)
+        
+        for form_name in student.belt_level.paperwork:
+            form = forms[form_name]
+            form.generate("{}/{}/{}-{}.jpg".format(args.output, form.name, student.fname, student.lname), sub_map)
   
 if __name__== "__main__":
   main()
