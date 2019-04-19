@@ -14,6 +14,53 @@ From there, the output of `StudentIterator` can be fed into multiuple different
 map or reduce methods (`PaperworkGenerator`) which consume that output and
 produce some form of paperwork.
 
+## Inputs
+
+```
+ python3 main.py --students inputs/students.xlsx --forms inputs/forms/ --config inputs/config --output=outputs/
+```
+| INPUT |  |
+|---|---|
+| students | students EXCEL file. Header must be `First Name, Last Name, Belt Size, Belt Level` |
+| forms | List of forms to fill out. Currently a form is a jpg image that has a matching `name.jpeg.xml` which defines how to fill it in. Example below |
+| config | `key = value`. Used as substititions in forms |
+| output | where does the output go |
+
+### students example
+
+```
+First Name  Last Name  Belt Size  Belt Level
+Rob         Dylan      size 5	  blue 
+Ari         Sikar      size 000   little dragon white
+Jamie       Smith      3          little dragon orange stripe
+Lily        Ha         7          black stripe
+Ming        Po         2          red stripe
+```
+
+### forms example
+
+Assumes you have a jpeg to dump text ontop of.
+```xml
+<?xml version="1.0"?>
+<template>
+    <field name="student.lname" x="90" y="180" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
+    <field name="student.fname" x="500" y="180" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
+    <field name="student.belt_level.name" x="127" y="430" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
+    <field name="head_instructor" x="525" y="270" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
+    <field name="dojang" x="125" y="270" font="Roboto-Regular.ttf" font_colour="#2196f3" font_size="18"></field>
+</template>
+```
+
+### config example
+
+```ini
+head_instructor = Mr. T. Taekwondo
+dojang = NTCC
+date_year = 2019
+date_month = Aug
+date_day = 14
+```
+
 ## Paperwork Generators
 
 ### 1. Test Form
