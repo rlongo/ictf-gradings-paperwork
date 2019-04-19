@@ -3,9 +3,8 @@
 import argparse
 import os
 
-from parsers import  StudentIteratorExcel, BeltLookupXML
+from parsers import  StudentIteratorExcel, BeltLookupXML, PaperworkJPEGForm
 from data_models import BeltLevel
-from paperwork import TemplateForm
 
 
 def get_args():
@@ -39,7 +38,7 @@ def main():
             name = file.split('.')[0]
             form = os.path.join(args.forms, file)
 
-            forms.append(TemplateForm(name, form[:-4], form))
+            forms.append(PaperworkJPEGForm(name, form[:-4], form))
 
     config = get_config(args.config)
     belt_lookup = BeltLookupXML(args.belts)

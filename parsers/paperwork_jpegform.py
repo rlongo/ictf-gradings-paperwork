@@ -5,21 +5,22 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-from paperwork import Paperwork
+from data_models import Paperwork
+import parsers.helpers as helpers
 
-class TemplateForm(Paperwork):
+class PaperworkJPEGForm(Paperwork):
     '''Template form take a template and generates the same file with annotations super-imposed'''
 
     def __init__(self, name, template_file, config_file):
-        self._verify_file(template_file)
-        self._verify_file(config_file)
+        assert helpers.verify_file(template_file)
+        assert helpers.verify_file(config_file)
 
         self.name = name
         self._template_file = template_file
         self._config = self._parse_config(config_file)
 
     def generate(self, output_file, sub_map):
-        self._create_file_path(output_file)
+        helpers.create_file_dirs(output_file)
 
         img = Image.open(self._template_file)
         draw = ImageDraw.Draw(img)
@@ -32,11 +33,6 @@ class TemplateForm(Paperwork):
         
         img.save(output_file)
 
-    def _create_file_path(self, file):
-        directory = os.path.dirname(file)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
     def _get_config_val(self, key, sub_map):
         keys = key.split('.')
         val = sub_map
@@ -47,10 +43,6 @@ class TemplateForm(Paperwork):
                 val = getattr(val, k)
 
         return str(val)
-
-    def _verify_file(self, f):
-        if not os.path.exists(f):
-            raise RuntimeError("file '{}' doesn't exist".format(f))
 
     def _parse_config(self, config_file):
         tree = ET.parse(config_file)
