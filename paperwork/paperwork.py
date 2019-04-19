@@ -1,11 +1,12 @@
+from abc import ABCMeta, abstractmethod
+
 class Paperwork:
     '''Data related to a piece of paperwork'''
 
-    def __init__(self, file_path, sub_map):
-        """Constructs a new piece of paperwork
-        :param file_path: path to the file
-        :param sub_map: dict of value to place into an x,y coordinate
+    @abstractmethod
+    def generate(self, output_file, sub_map):
+        """Generates the paperwork from the provided template
+        :param output_file: where to save the file
+        :param sub_map: dict of str -> values to be used in the sub map
         """
-        self.file_path = file_path
-        self.sub_map = sub_map
-
+        pass
