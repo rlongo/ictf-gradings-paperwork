@@ -10,8 +10,8 @@ The project is designed as a pipeline with several map-reduce steps:
     3. Other Inputs to render on forms
 2. MAP `aggregator`: matches student info to belt info
 
-From there, the output of `aggregator` can be fed into multiuple different
-map or reduce methods (`paperwork_generator`) which consume that output and
+From there, the output of `StudentIterator` can be fed into multiuple different
+map or reduce methods (`PaperworkGenerator`) which consume that output and
 produce some form of paperwork.
 
 ## Paperwork Generators
