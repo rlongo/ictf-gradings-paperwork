@@ -2,9 +2,9 @@ import pandas as pd
 import re
 import xlsxwriter
 
-from data_models import StudentIterator, Student
-from aggregators import Aggregator
-import parsers.helpers as helpers
+from ictf_pipeline.data_models import StudentIterator, Student
+from ictf_pipeline.aggregators import Aggregator
+import ictf_pipeline.parsers.helpers as helpers
 
 class StudentIteratorExcel(StudentIterator):
     def __init__(self, file, belt_lookup):
