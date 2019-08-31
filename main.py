@@ -51,12 +51,40 @@ def get_config(config_file):
             config[line[0].strip()] = line[1].strip()
     return config
 
+def pipeline(forms, aggregators, student_iter, output_dir, global_config):
+    form_names = set()
+    
+    # Process the students
+    for student in student_iter:
+        sub_map = global_config
+        sub_map["student"] = student
+
+        for aggregator in aggregators:
+            aggregator.process(student)
+       
+        for dir_name, form_name in student.belt_level.paperwork:
+            form = forms[form_name]
+            output_file = "{}/{}/{}.{}.jpg".format(output_dir, dir_name, student.fname, student.lname)
+            form.generate(output_file, sub_map)
+            form_names.add(dir_name)
+    
+    # Save the aggregators to disk
+    for aggregator in aggregators:
+        output_file = "{}/GOOD/{}.xlsx".format(output_dir, aggregator.__class__.__name__)
+        write_aggregator_excel(output_file, aggregator)
+
+    # Merge the forms into one PDF
+    for form_name in form_names:
+        filled_forms_dir = os.path.join(output_dir, form_name, )
+        target_files = [os.path.join(filled_forms_dir, f) for f in os.listdir(filled_forms_dir)]
+        output_file = "{}/GOOD/{}.pdf".format(output_dir, form_name)
+        make_pdf(output_file, target_files)
+
 def main():
     args = get_args()
 
     aggregators = [BeltOrderAggregator(), RegistrationListAggregator()]
 
-    form_names = set()
     forms = dict()
 
     config = get_config(args.config)
@@ -69,32 +97,11 @@ def main():
             form = os.path.join(args.forms, file)
             forms[name] = PaperworkJPEGForm(name, form[:-4], form)
 
-    # Process the students
-    for student in StudentIteratorExcel(args.students, belt_lookup):
-        sub_map = config
-        sub_map["student"] = student
+    student_iter = StudentIteratorExcel(args.students, belt_lookup)
 
-        for aggregator in aggregators:
-            aggregator.process(student)
-        
-        for dir_name, form_name in student.belt_level.paperwork:
-            form = forms[form_name]
-            output_file = "{}/{}/{}.{}.jpg".format(args.output, dir_name, student.fname, student.lname)
-            form.generate(output_file, sub_map)
-            form_names.add(dir_name)
-    
-    # Save the aggregators to disk
-    for aggregator in aggregators:
-        output_file = "{}/GOOD/{}.xlsx".format(args.output, aggregator.__class__.__name__)
-        write_aggregator_excel(output_file, aggregator)
-
-    # Merge the forms into one PDF
-    for form_name in form_names:
-        filled_forms_dir = os.path.join(args.output, form_name, )
-        target_files = [os.path.join(filled_forms_dir, f) for f in os.listdir(filled_forms_dir)]
-        output_file = "{}/GOOD/{}.pdf".format(args.output, form_name)
-        make_pdf(output_file, target_files)
+    pipeline(forms, aggregators, student_iter, args.output, config)
 
 
 if __name__== "__main__":
   main()
+
