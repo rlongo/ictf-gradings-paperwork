@@ -1,9 +1,9 @@
-from data_models import BeltLevel, BeltLookup
+from ictf_pipeline.data_models import BeltLevel, BeltLookup
 
 import os
 import xml.etree.ElementTree as ET
 
-import parsers.helpers as helpers
+import ictf_pipeline.parsers.helpers as helpers
 
 class BeltLookupXML(BeltLookup):
     def __init__(self, config_file):

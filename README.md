@@ -1,5 +1,5 @@
 # ICTF Gradings Paperwork
-Throwaway project to generate paperwork required for ictf gradings.
+A project to generate paperwork required for ictf gradings.
 
 ## Architecture
 

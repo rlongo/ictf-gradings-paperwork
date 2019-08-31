@@ -5,8 +5,8 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-from data_models import Paperwork
-import parsers.helpers as helpers
+from ictf_pipeline.data_models import Paperwork
+import ictf_pipeline.parsers.helpers as helpers
 
 class PaperworkJPEGForm(Paperwork):
     '''Template form take a template and generates the same file with annotations super-imposed'''

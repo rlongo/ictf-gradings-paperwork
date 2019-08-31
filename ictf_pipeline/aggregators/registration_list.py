@@ -1,5 +1,5 @@
-from aggregators import Aggregator
-from data_models import Student
+from . import Aggregator
+from ictf_pipeline.data_models import Student
 
 class RegistrationListAggregator(Aggregator):
     def __init__(self):
