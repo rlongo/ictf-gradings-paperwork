@@ -28,27 +28,34 @@ def ictf_pipeline(forms, aggregators, student_iter, output_dir, global_config):
     form_names = set()
     
     # Process the students
-    for student in student_iter:
-        sub_map = global_config
-        sub_map["student"] = student
+    try:
+        for student in student_iter:
+            sub_map = global_config
+            sub_map["student"] = student
 
-        for aggregator in aggregators:
-            aggregator.process(student)
-       
-        for dir_name, form_name in student.belt_level.paperwork:
-            form = forms[form_name]
-            output_file = "{}/{}/{}.{}.jpg".format(output_dir, dir_name, student.fname, student.lname)
-            form.generate(output_file, sub_map)
-            form_names.add(dir_name)
+            for aggregator in aggregators:
+                aggregator.process(student)
+           
+            for dir_name, form_name in student.belt_level.paperwork:
+                form = forms[form_name]
+                output_file = "{}/{}/{}.{}.jpg".format(output_dir, dir_name, student.fname, student.lname)
+                form.generate(output_file, sub_map)
+                form_names.add(dir_name)
+    except:
+        raise Exception('Error when processing student list. Please ensure that it is formatted correctly')
     
     # Save the aggregators to disk
-    for aggregator in aggregators:
-        output_file = "{}/GOOD/{}.xlsx".format(output_dir, aggregator.__class__.__name__)
-        write_aggregator_excel(output_file, aggregator)
+    try:
+        for aggregator in aggregators:
+            output_file = "{}/GOOD/{}.xlsx".format(output_dir, aggregator.__class__.__name__)
+            write_aggregator_excel(output_file, aggregator)
 
-    # Merge the forms into one PDF
-    for form_name in form_names:
-        filled_forms_dir = os.path.join(output_dir, form_name, )
-        target_files = [os.path.join(filled_forms_dir, f) for f in os.listdir(filled_forms_dir)]
-        output_file = "{}/GOOD/{}.pdf".format(output_dir, form_name)
-        make_pdf(output_file, target_files)
+        # Merge the forms into one PDF
+        for form_name in form_names:
+            filled_forms_dir = os.path.join(output_dir, form_name, )
+            target_files = [os.path.join(filled_forms_dir, f) for f in os.listdir(filled_forms_dir)]
+            output_file = "{}/GOOD/{}.pdf".format(output_dir, form_name)
+            make_pdf(output_file, target_files)
+    except:
+        raise Exception('Error generating output. Please contact the site administrator')
+
