@@ -1,0 +1,5 @@
+fpdf
+pandas
+Pillow
+xlrd
+XlsxWriter
