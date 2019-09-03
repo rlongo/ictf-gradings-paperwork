@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod
 import re
 
+
 class BeltLevel:
     '''Information pertaining to the current belt level'''
-    
+
     def __init__(self, name, match_pattern, next_level, paperwork, attributes):
         """Constructs a new belt level record
         :param name: Human name for this belt level
@@ -17,9 +18,9 @@ class BeltLevel:
         self.match_pattern = match_pattern
         self.next_level = next_level
         self.paperwork = paperwork
-        for k,v in attributes.items():
+        for k, v in attributes.items():
             setattr(self, k, v)
-    
+
     def __str__(self):
         next_level = "None"
         if self.next_level:
@@ -37,10 +38,13 @@ class BeltLookup:
         belt_levels = self._get_belt_levels()
 
         for level in belt_levels:
-            if re.compile(level.match_pattern).match(claimed_belt_level.lower()):
+            if re.compile(
+                    level.match_pattern).match(
+                    claimed_belt_level.lower()):
                 return level
-        
-        raise RuntimeError("Failed to parse belt level '{}'".format(claimed_belt_level))
+
+        raise RuntimeError(
+            "Failed to parse belt level '{}'".format(claimed_belt_level))
 
     @abstractmethod
     def _get_belt_levels(self):

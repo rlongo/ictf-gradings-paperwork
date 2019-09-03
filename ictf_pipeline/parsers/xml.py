@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 
 import ictf_pipeline.parsers.helpers as helpers
 
+
 class BeltLookupXML(BeltLookup):
     def __init__(self, config_file):
         assert helpers.verify_file(config_file)
@@ -30,11 +31,11 @@ class BeltLookupXML(BeltLookup):
         for belt_id, belt in config.items():
             try:
                 belt.next_level = config[lookup[belt_id]]
-            except:
-                pass # Ignore any exceptions here... next can be none
+            except BaseException:
+                pass  # Ignore any exceptions here... next can be none
             belt_levels.append(belt)
         return belt_levels
-    
+
     def _parse_belt_xml(self, tag):
         '''Parses and returns a belt level.
         Note that this method does not connect the next field of belt level
@@ -46,8 +47,8 @@ class BeltLookupXML(BeltLookup):
         match_pattern = tag.findtext(".//match_pattern")
         try:
             next_belt_id = tag.attrib["next_belt"]
-        except:
-            pass # This is optional
+        except BaseException:
+            pass  # This is optional
 
         paperwork = []
         attributes = dict()
@@ -58,11 +59,9 @@ class BeltLookupXML(BeltLookup):
             name = None
             try:
                 name = target.attrib["name"]
-            except:
+            except BaseException:
                 name = os.path.splitext(os.path.basename(target.text))[0]
             paperwork.append((name, target.text))
 
-        return belt_id, next_belt_id, BeltLevel(belt_name, match_pattern, None, paperwork, attributes)
-
-
-
+        return belt_id, next_belt_id, BeltLevel(
+            belt_name, match_pattern, None, paperwork, attributes)

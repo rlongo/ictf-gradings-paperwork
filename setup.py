@@ -5,7 +5,7 @@ setup(
     name="ictf_pipeline",
 
     # Version number (initial):
-    version="1.1.5",
+    version="1.2.2",
 
     # Application author details:
     author="Robert Longo",

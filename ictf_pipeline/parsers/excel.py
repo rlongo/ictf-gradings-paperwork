@@ -6,6 +6,7 @@ from ictf_pipeline.data_models import StudentIterator, Student
 from ictf_pipeline.aggregators import Aggregator
 import ictf_pipeline.parsers.helpers as helpers
 
+
 class StudentIteratorExcel(StudentIterator):
     def __init__(self, file, belt_lookup):
         self.belt_lookup = belt_lookup
@@ -16,8 +17,8 @@ class StudentIteratorExcel(StudentIterator):
         row = next(self.rowiter)[1]
         level = self.belt_lookup.get_belt_level(row["Belt Level"])
         size = self._sanitize_belt_size(row["Belt Size"])
-        return  Student(row["First Name"], row["Last Name"], level, size)
-    
+        return Student(row["First Name"], row["Last Name"], level, size)
+
     def _sanitize_belt_size(self, size):
         '''Reformats belt size string as 'Size 00' '''
         regex = r"(?:size)?\s*(\d+)"
@@ -41,4 +42,4 @@ def write_aggregator_excel(output_file, aggregator):
 
     writer = pd.ExcelWriter(output_file, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1')
-    writer.save() 
+    writer.save()
