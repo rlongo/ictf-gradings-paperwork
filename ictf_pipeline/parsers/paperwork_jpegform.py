@@ -8,12 +8,15 @@ from PIL import ImageDraw
 from ictf_pipeline.data_models import Paperwork
 import ictf_pipeline.parsers.helpers as helpers
 
+
 class PaperworkJPEGForm(Paperwork):
     '''Template form take a template and generates the same file with annotations super-imposed'''
 
     def __init__(self, name, template_file, config_file):
-        assert helpers.verify_file(template_file), "Template not found '{}'".format(template_file)
-        assert helpers.verify_file(config_file), "Template config not found '{}'".format(config_file)
+        assert helpers.verify_file(
+            template_file), "Template not found '{}'".format(template_file)
+        assert helpers.verify_file(
+            config_file), "Template config not found '{}'".format(config_file)
 
         self.name = name
         self._template_file = template_file
@@ -30,7 +33,7 @@ class PaperworkJPEGForm(Paperwork):
             ink = self._hex_as_rgb(config.font_colour)
             val = self._get_config_val(config.field_name, sub_map)
             draw.text((int(config.x), int(config.y)), val, ink, font=afont)
-        
+
         img.save(output_file)
 
     def _get_config_val(self, key, sub_map):
@@ -38,21 +41,21 @@ class PaperworkJPEGForm(Paperwork):
             keys = key.split('.')
             val = sub_map
             for k in keys:
-                if isinstance(val,dict):
+                if isinstance(val, dict):
                     val = val[k]
                 else:
                     val = getattr(val, k)
 
             return str(val)
-        except:
+        except BaseException:
             print("Key not found. Defaulting to empty '{}'".format(key))
-        
+
         return ""
 
         keys = key.split('.')
         val = sub_map
         for k in keys:
-            if isinstance(val,dict):
+            if isinstance(val, dict):
                 val = val[k]
             else:
                 val = getattr(val, k)
@@ -71,15 +74,22 @@ class PaperworkJPEGForm(Paperwork):
             font = tag.attrib["font"]
             font_colour = tag.attrib["font_colour"]
             font_size = tag.attrib["font_size"]
-            config.append(_TemplateConfig(field_name, x, y, font, font_colour, font_size))
+            config.append(
+                _TemplateConfig(
+                    field_name,
+                    x,
+                    y,
+                    font,
+                    font_colour,
+                    font_size))
 
         return config
 
     def _hex_as_rgb(self, hex_colour):
         hex_colour = hex_colour.strip('#')
-        r = int(hex_colour[ :2], 16)
+        r = int(hex_colour[:2], 16)
         g = int(hex_colour[2:4], 16)
-        b = int(hex_colour[4: ], 16)
+        b = int(hex_colour[4:], 16)
         return (r, g, b)
 
 

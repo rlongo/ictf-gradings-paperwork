@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+
 class Paperwork:
     '''Data related to a piece of paperwork'''
 

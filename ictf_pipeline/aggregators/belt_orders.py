@@ -1,6 +1,7 @@
 from . import Aggregator
 from ictf_pipeline.data_models import Student
 
+
 class BeltOrderAggregator(Aggregator):
     def __init__(self):
         self.vals = dict()
@@ -15,15 +16,15 @@ class BeltOrderAggregator(Aggregator):
         if belt_level:
             if belt_level not in self.vals:
                 self.vals[belt_level] = dict()
-            
+
             size = student.belt_size
             if size not in self.vals[belt_level]:
                 self.vals[belt_level][size] = 0
 
             self.vals[belt_level][size] += 1
-    
+
     def get_header(self):
-        return "Belt Level", "Belt Size", "Quantity" 
+        return "Belt Level", "Belt Size", "Quantity"
 
     def get_stat_iter(self):
         for belt_level, sizes in self.vals.items():
